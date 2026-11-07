@@ -81,7 +81,7 @@ cd Minecraft-Rust-Server-Panel
 
 Das Skript installiert Rust und Zig, baut Horizon für ARM64 (passend zur glibc von Raspberry Pi OS) und kopiert
 `horizon-server` und `horizon-engine` per SSH nach `~/horizon-panel/bin/` auf den Pi. Es fragt dabei nach dem
-Pi-Passwort. Ohne `--pi` landen die Programme nur im Ordner `horizon-pi-bin/`.
+Pi-Passwort. Ohne `--pi` landen die Programme nur in `~/horizon-pi-bin/`.
 Für Updates einfach dasselbe nochmal ausführen und danach die Server im Panel neu starten.
 
 ### Online-Modus

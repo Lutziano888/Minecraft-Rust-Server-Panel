@@ -2,7 +2,7 @@
 # Baut Horizon am PC für den Raspberry Pi (ARM64) und kopiert es auf Wunsch gleich rüber.
 # Läuft unter Linux (Arch, Ubuntu, Fedora …) oder in WSL auf Windows. Viel schneller als auf dem Pi zu bauen.
 #
-#   ./scripts/cross-build-horizon.sh                          # nur bauen → ./horizon-pi-bin/
+#   ./scripts/cross-build-horizon.sh                          # nur bauen → ~/horizon-pi-bin/
 #   ./scripts/cross-build-horizon.sh --pi pi@raspberrypi.local  # bauen und auf den Pi kopieren
 #
 # Gebaut wird mit cargo-zigbuild gegen glibc 2.36, damit es auf Raspberry Pi OS Bookworm und
@@ -12,7 +12,7 @@ set -euo pipefail
 PI=""
 BRANCH="${HORIZON_BRANCH:-main}"
 SRC="${HORIZON_SRC:-$HOME/horizon-src}"
-OUT="$(pwd)/horizon-pi-bin"
+OUT="${HORIZON_OUT:-$HOME/horizon-pi-bin}"
 REMOTE_DATA="horizon-panel"   # relativ zum Home-Ordner auf dem Pi
 TARGET="aarch64-unknown-linux-gnu"
 GLIBC="2.36"
