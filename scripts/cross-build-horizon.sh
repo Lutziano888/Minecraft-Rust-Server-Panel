@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Baut Horizon am PC für den Raspberry Pi (ARM64) und kopiert es auf Wunsch gleich rüber.
-# Läuft unter Linux oder in WSL (Ubuntu) auf Windows. Viel schneller als auf dem Pi zu bauen.
+# Läuft unter Linux (Arch, Ubuntu, Fedora …) oder in WSL auf Windows. Viel schneller als auf dem Pi zu bauen.
 #
 #   ./scripts/cross-build-horizon.sh                          # nur bauen → ./horizon-pi-bin/
 #   ./scripts/cross-build-horizon.sh --pi pi@raspberrypi.local  # bauen und auf den Pi kopieren
@@ -31,18 +31,30 @@ die() { printf '\033[1;31mFehler:\033[0m %s\n' "$*" >&2; exit 1; }
 
 [ "$(uname -s)" = Linux ] || die "Bitte unter Linux oder WSL ausführen (Windows: wsl --install -d Ubuntu)."
 
-if ! command -v cc >/dev/null || ! command -v git >/dev/null || ! command -v python3 >/dev/null; then
+if ! command -v cc >/dev/null || ! command -v git >/dev/null || ! command -v python3 >/dev/null || ! command -v ssh >/dev/null; then
   say "Pakete installieren"
-  sudo apt-get update -qq
-  sudo apt-get install -y -qq build-essential git curl pkg-config python3 python3-venv ca-certificates >/dev/null
+  if command -v pacman >/dev/null; then        # Arch
+    sudo pacman -S --needed --noconfirm base-devel git curl python openssh
+  elif command -v apt-get >/dev/null; then     # Ubuntu/Debian/WSL
+    sudo apt-get update -qq
+    sudo apt-get install -y -qq build-essential git curl pkg-config python3 python3-venv openssh-client ca-certificates >/dev/null
+  elif command -v dnf >/dev/null; then         # Fedora
+    sudo dnf install -y gcc make git curl python3 openssh-clients
+  else
+    die "Bitte gcc, git, curl, python3 und ssh installieren."
+  fi
 fi
 
-if [ ! -x "$HOME/.cargo/bin/rustup" ]; then
+# rustup: vorhandenes benutzen (z. B. aus pacman), sonst installieren.
+if ! command -v rustup >/dev/null && [ ! -x "$HOME/.cargo/bin/rustup" ]; then
   say "Rust installieren"
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
 fi
 # shellcheck disable=SC1091
-. "$HOME/.cargo/env"
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+export PATH="$HOME/.cargo/bin:$PATH"
+command -v rustup >/dev/null || die "rustup fehlt. Arch: sudo pacman -S rustup && rustup default stable"
+rustup default >/dev/null 2>&1 || rustup default stable
 rustup update stable --no-self-update >/dev/null 2>&1 || true
 rustup target add "$TARGET" >/dev/null
 

@@ -60,7 +60,15 @@ http://<IP-des-Pi>:8080        oder        http://<name-des-pi>.local:8080
 
 ### Horizon am PC bauen (schneller)
 
-Ein Desktop-PC baut Horizon in einem Bruchteil der Zeit. Unter Windows geht das mit WSL (Linux in Windows):
+Ein Desktop-PC baut Horizon in einem Bruchteil der Zeit. **Unter Linux (z. B. Arch)** direkt im Terminal:
+
+```bash
+git clone https://github.com/Lutziano888/Minecraft-Rust-Server-Panel.git
+cd Minecraft-Rust-Server-Panel
+./scripts/cross-build-horizon.sh --pi BENUTZER@raspberrypi.local
+```
+
+**Unter Windows** geht das mit WSL (Linux in Windows):
 
 1. PowerShell **als Administrator**: `wsl --install -d Ubuntu`, neu starten, Benutzer anlegen.
 2. Im Ubuntu-Fenster:
