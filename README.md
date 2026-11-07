@@ -45,6 +45,7 @@ http://<IP-des-Pi>:8080        oder        http://<name-des-pi>.local:8080
 1. **Horizon bauen** – für den Pi gibt es keine fertigen Downloads, darum wird Horizon aus dem Quellcode gebaut.
    Im Panel unter **Pi & Horizon → Horizon bauen** (oder direkt am Ende von `install.sh`).
    Dauert auf dem Pi 5 grob 30–90 Minuten. Du kannst die Seite währenddessen schließen.
+   **Schneller:** am PC bauen und rüberkopieren, siehe [Horizon am PC bauen](#horizon-am-pc-bauen-schneller).
 2. **Spieldateien vorbereiten** (am Windows-PC, einmalig und nach Minecraft-Updates):
    ```powershell
    horizon-prepare --prepare --server-jar C:\Pfad\zu\server.jar
@@ -56,6 +57,24 @@ http://<IP-des-Pi>:8080        oder        http://<name-des-pi>.local:8080
 4. **Server anlegen**: Tab **Neu**, Namen eingeben, EULA bestätigen, fertig. Dann **▶ Start**.
 5. **Verbinden**: In Minecraft/Horizon als Serveradresse `<IP-des-Pi>:25565` eintragen
    (die genaue Adresse steht im Server unter **Übersicht**).
+
+### Horizon am PC bauen (schneller)
+
+Ein Desktop-PC baut Horizon in einem Bruchteil der Zeit. Unter Windows geht das mit WSL (Linux in Windows):
+
+1. PowerShell **als Administrator**: `wsl --install -d Ubuntu`, neu starten, Benutzer anlegen.
+2. Im Ubuntu-Fenster:
+   ```bash
+   git clone https://github.com/Lutziano888/Minecraft-Rust-Server-Panel.git
+   cd Minecraft-Rust-Server-Panel
+   ./scripts/cross-build-horizon.sh --pi BENUTZER@raspberrypi.local
+   ```
+   `BENUTZER` ist dein Benutzername auf dem Pi, statt `raspberrypi.local` geht auch die IP.
+
+Das Skript installiert Rust und Zig, baut Horizon für ARM64 (passend zur glibc von Raspberry Pi OS) und kopiert
+`horizon-server` und `horizon-engine` per SSH nach `~/horizon-panel/bin/` auf den Pi. Es fragt dabei nach dem
+Pi-Passwort. Ohne `--pi` landen die Programme nur im Ordner `horizon-pi-bin/`.
+Für Updates einfach dasselbe nochmal ausführen und danach die Server im Panel neu starten.
 
 ### Online-Modus
 

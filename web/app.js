@@ -611,7 +611,7 @@ function renderPi() {
       <div class="row"><span class="grow">Spieldateien 26.3</span><b>${ok(h.game_files)}</b></div>
       ${h.game_files ? `<div class="hint">Eingespielt: ${fmtTime(h.game_files.modified)}</div>` : ""}
       <button class="btn ${built ? "" : "primary"} wide" id="hz-build" ${h.building || !h.build_script ? "disabled" : ""}>${h.building ? "Wird gebaut…" : built ? "Horizon aktualisieren (neu bauen)" : "Horizon bauen"}</button>
-      <div class="hint">Lädt den neuesten Horizon-Code und baut ihn auf dem Pi – das dauert eine Weile (oft 30–90 Minuten). Server können weiterlaufen; danach neu starten.</div>`;
+      <div class="hint">Lädt den neuesten Horizon-Code und baut ihn auf dem Pi – das dauert eine Weile (oft 30–90 Minuten). Server können weiterlaufen; danach neu starten. Schneller geht es am PC mit <code>scripts/cross-build-horizon.sh</code> (siehe README).</div>`;
     $("#hz-build").onclick = async () => {
       if (!(await dialog({ title: "Horizon bauen?", body: "Der Pi ist dabei stark ausgelastet und wird warm. Du kannst die Seite schließen – der Build läuft weiter.", ok: "Bauen" }))) return;
       const r = await act(api("POST", "/api/horizon/build"), "Build gestartet");
