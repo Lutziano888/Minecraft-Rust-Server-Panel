@@ -695,7 +695,7 @@ impl Manager {
         if port < 1024 {
             return Err("Port muss 1024 oder höher sein".into());
         }
-        if port == 8080 || port == 8130 {
+        if port == 5341 || port == 8130 {
             return Err(format!("Port {port} ist für Panels reserviert"));
         }
         if self.used_ports(except).contains(&port) {
@@ -707,7 +707,7 @@ impl Manager {
     fn free_port(&self) -> u16 {
         let used = self.used_ports(None);
         (self.first_port..=u16::MAX)
-            .find(|p| !used.contains(p) && *p != 8080 && *p != 8130)
+            .find(|p| !used.contains(p) && *p != 5341 && *p != 8130)
             .unwrap_or(25565)
     }
 

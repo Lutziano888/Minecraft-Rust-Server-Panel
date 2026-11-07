@@ -94,7 +94,7 @@ async fn serve(data: std::path::PathBuf) {
     let bind: SocketAddr = cfg
         .bind
         .parse()
-        .unwrap_or_else(|_| fail(&format!("bind = \"{}\" ist keine Adresse wie 0.0.0.0:8080", cfg.bind)));
+        .unwrap_or_else(|_| fail(&format!("bind = \"{}\" ist keine Adresse wie 0.0.0.0:5341", cfg.bind)));
     let mgr = servers::Manager::load(paths, cfg.first_port);
     let sampler = Arc::new(system::Sampler::default());
     sampler.clone().spawn();

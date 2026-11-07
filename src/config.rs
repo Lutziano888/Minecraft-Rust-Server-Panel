@@ -7,7 +7,7 @@ pub const FILE: &str = "panel.toml";
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct PanelConfig {
-    /// Wo das Panel lauscht. 0.0.0.0:8080 = im ganzen Heimnetz erreichbar (Passwort nötig).
+    /// Wo das Panel lauscht. 0.0.0.0:5341 = im ganzen Heimnetz erreichbar (Passwort nötig).
     #[serde(default = "default_bind")]
     pub bind: String,
     /// Argon2-Hash des Passworts (`horizon-pi-panel set-password`).
@@ -28,7 +28,7 @@ pub struct PanelConfig {
 }
 
 fn default_bind() -> String {
-    "0.0.0.0:8080".into()
+    "0.0.0.0:5341".into()
 }
 fn default_first_port() -> u16 {
     25565

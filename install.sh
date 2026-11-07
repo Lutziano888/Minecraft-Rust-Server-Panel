@@ -48,14 +48,14 @@ if ! grep -qs '^password_hash = "\$' "$DATA/panel.toml"; then
   until horizon-pi-panel --data "$DATA" set-password; do warn "Nochmal bitte."; done
 fi
 
-# Ist der Panel-Port schon belegt (z. B. von einem anderen Dienst auf 8080)? Dann den nächsten freien nehmen.
+# Ist der Panel-Port schon belegt (z. B. von einem anderen Dienst)? Dann den nächsten freien nehmen.
 sudo systemctl stop $SERVICE 2>/dev/null || true
 port_busy() {
   if command -v ss >/dev/null; then ss -Hltn "sport = :$1" 2>/dev/null | grep -q .
   else (exec 3<>"/dev/tcp/127.0.0.1/$1") 2>/dev/null; fi
 }
 BIND="$(sed -n 's/^bind = "\(.*\)"/\1/p' "$DATA/panel.toml")"
-BIND="${BIND:-0.0.0.0:8080}"
+BIND="${BIND:-0.0.0.0:5341}"
 PORT="${BIND##*:}"
 if port_busy "$PORT"; then
   NEW=$PORT
@@ -99,7 +99,7 @@ systemctl is-active --quiet $SERVICE || { sudo journalctl -u $SERVICE -n 30 --no
 
 IP="$(hostname -I 2>/dev/null | awk '{ print $1 }')"
 PORT="$(sed -n 's/^bind = "[^:]*:\([0-9]*\)"/\1/p' "$DATA/panel.toml")"
-say "Fertig! Panel: http://${IP:-<pi-ip>}:${PORT:-8080}  (auch http://$(hostname).local:${PORT:-8080})"
+say "Fertig! Panel: http://${IP:-<pi-ip>}:${PORT:-5341}  (auch http://$(hostname).local:${PORT:-5341})"
 
 if [ ! -x "$DATA/bin/horizon-server" ]; then
   echo

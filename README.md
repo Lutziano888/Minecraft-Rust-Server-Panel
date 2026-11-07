@@ -37,7 +37,7 @@ Das Skript installiert Rust, baut das Panel, fragt nach einem **Passwort** und r
 `horizon-pi-panel` ein. Danach öffnest du am Handy (im selben WLAN):
 
 ```
-http://<IP-des-Pi>:8080        oder        http://<name-des-pi>.local:8080
+http://<IP-des-Pi>:5341        oder        http://<name-des-pi>.local:5341
 ```
 
 ## Erste Schritte
