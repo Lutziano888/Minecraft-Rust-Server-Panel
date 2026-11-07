@@ -162,7 +162,7 @@ function serverCard(s) {
 }
 
 function renderServers() {
-  view().innerHTML = `<div class="card-head"><h2>Server</h2><a class="btn small primary" href="#/new">＋ Neuer Server</a></div><div id="list"></div><div id="setup-hint"></div>`;
+  view().innerHTML = `<div class="card-head"><h2>Server</h2><a class="btn small primary" href="#/new">+ Neuer Server</a></div><div id="list"></div><div id="setup-hint"></div>`;
   every(async () => {
     try {
       const { servers } = await api("GET", "/api/servers");
