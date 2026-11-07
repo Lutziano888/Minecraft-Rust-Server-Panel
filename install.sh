@@ -48,6 +48,26 @@ if ! grep -qs '^password_hash = "\$' "$DATA/panel.toml"; then
   until horizon-pi-panel --data "$DATA" set-password; do warn "Nochmal bitte."; done
 fi
 
+# Ist der Panel-Port schon belegt (z. B. von einem anderen Dienst auf 8080)? Dann den nächsten freien nehmen.
+sudo systemctl stop $SERVICE 2>/dev/null || true
+port_busy() {
+  if command -v ss >/dev/null; then ss -Hltn "sport = :$1" 2>/dev/null | grep -q .
+  else (exec 3<>"/dev/tcp/127.0.0.1/$1") 2>/dev/null; fi
+}
+BIND="$(sed -n 's/^bind = "\(.*\)"/\1/p' "$DATA/panel.toml")"
+BIND="${BIND:-0.0.0.0:8080}"
+PORT="${BIND##*:}"
+if port_busy "$PORT"; then
+  NEW=$PORT
+  while port_busy "$NEW" || [ "$NEW" = 8130 ]; do NEW=$((NEW + 1)); done
+  warn "Port $PORT ist schon belegt (von: $(sudo ss -Hltnp "sport = :$PORT" 2>/dev/null | grep -o 'users:(("[^"]*' | cut -d'"' -f2 | head -n1 || true)) – das Panel nimmt Port $NEW."
+  if grep -q '^bind = ' "$DATA/panel.toml"; then
+    sed -i "s/^bind = .*/bind = \"${BIND%:*}:$NEW\"/" "$DATA/panel.toml"
+  else
+    printf 'bind = "%s:%s"\n' "${BIND%:*}" "$NEW" >> "$DATA/panel.toml"
+  fi
+fi
+
 say "Systemdienst einrichten (startet mit dem Pi)"
 sudo tee /etc/systemd/system/$SERVICE.service >/dev/null <<EOF
 [Unit]
